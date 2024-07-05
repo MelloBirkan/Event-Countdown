@@ -53,5 +53,5 @@ struct EventsView: View {
 }
 
 #Preview {
-  EventsView()
+  EventsView(events: [Event(title: "Party", date: .now, textColor: .accentColor)])
 }

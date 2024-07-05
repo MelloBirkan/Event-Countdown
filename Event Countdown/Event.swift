@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Event: Identifiable, Comparable {
+struct Event: Identifiable, Comparable, Hashable {
   var id = UUID()
   var title: String
   var date: Date
