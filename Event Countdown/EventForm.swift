@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct EventForm: View {
+  @Environment(\.dismiss) var dismiss
   @State var title: String = ""
   @State var color = Color.accentColor
   @State var date = Date()
-  @Binding var isPresented: Bool
   @Binding var events: [Event]
+  var isNew: Bool = true
+  @State var old = Event(title: "", date: .now, textColor: .accentColor)
+  let oldEvent: Event?
   
   var body: some View {
     NavigationStack {
@@ -28,27 +31,36 @@ struct EventForm: View {
       .toolbar {
         ToolbarItem(placement: .confirmationAction) {
           Button("Confirm") {
+            if !isNew {
+              events.remove(at: events.firstIndex(of: oldEvent!)!)
+            }
             events.append(Event(title: title, date: date, textColor: color))
-            isPresented = false
+            dismiss()
           }
           .disabled(title.isEmpty)
         }
         
-        ToolbarItem(placement: .cancellationAction) {
-          Button("Cancel") {
-            isPresented = false
+        if isNew {
+          ToolbarItem(placement: .cancellationAction) {
+            Button("Cancel") {
+              dismiss()
+            }
+            .foregroundStyle(.red)
           }
-          .foregroundStyle(.red)
         }
       }
       .navigationTitle(title.isEmpty ? "Event" : title)
       .navigationBarTitleDisplayMode(.inline)
     }
+    .onAppear(perform: {
+      self.old = Event(title: title, date: date, textColor: color)
+      print(old)
+    })
   }
 }
 
 #Preview {
   NavigationStack {
-    EventForm(isPresented: .constant(true), events: .constant([]))
+    EventForm(events: .constant([]), oldEvent: nil)
   }
 }

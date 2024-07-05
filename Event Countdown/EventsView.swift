@@ -13,30 +13,40 @@ struct EventsView: View {
   
   var body: some View {
     NavigationStack {
-      
-      Group {
-        if events.isEmpty {
+      if events.isEmpty {
+        VStack {
           ContentUnavailableView("Your schedule is currently empty. Add new events to stay organized!", systemImage: "calendar.badge.exclamationmark")
-        } else {
-          List(events) { event in
+            .frame(height: 200)
+          
+          Button("Add Event") {
+            isPresentingNewEventView.toggle()
+          }
+          .buttonStyle(BorderedButtonStyle())
+        }
+      } else {
+        List(events) { event in
+          NavigationLink {
+            EventForm(title: event.title, color: event.textColor, date: event.date, events: $events, isNew: false, oldEvent: event)
+          } label: {
+            EventRow(event: event)
           }
         }
-      }
-      .toolbar {
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: {
-            isPresentingNewEventView = true
-          }) {
-            Image(systemName: "plus")
-              .font(.title)
+        .toolbar {
+          ToolbarItem(placement: .navigationBarTrailing) {
+            Button(action: {
+              isPresentingNewEventView = true
+            }) {
+              Image(systemName: "plus")
+                .font(.title)
+            }
           }
         }
-      }
-      .sheet(isPresented: $isPresentingNewEventView) {
-        EventForm(isPresented: $isPresentingNewEventView, events: $events)
+        .navigationTitle("Events")
       }
     }
-    .navigationTitle("Events")
+    .sheet(isPresented: $isPresentingNewEventView) {
+      EventForm(events: $events, isNew: true, oldEvent: nil)
+    }
   }
 }
 
