@@ -14,8 +14,7 @@ struct EventForm: View {
   @State var date = Date()
   @Binding var events: [Event]
   var isNew: Bool = true
-  @State var old = Event(title: "", date: .now, textColor: .accentColor)
-  let oldEvent: Event?
+  var oldEvent: Event?
   
   var body: some View {
     NavigationStack {
@@ -32,9 +31,11 @@ struct EventForm: View {
         ToolbarItem(placement: .confirmationAction) {
           Button("Confirm") {
             if !isNew {
-              events.remove(at: events.firstIndex(of: oldEvent!)!)
+              let index = events.firstIndex(of: oldEvent!)
+              events[index!] = Event(title: title, date: date, textColor: color)
+            } else {
+              events.append(Event(title: title, date: date, textColor: color))
             }
-            events.append(Event(title: title, date: date, textColor: color))
             dismiss()
           }
           .disabled(title.isEmpty)
@@ -52,15 +53,11 @@ struct EventForm: View {
       .navigationTitle(title.isEmpty ? "Event" : title)
       .navigationBarTitleDisplayMode(.inline)
     }
-    .onAppear(perform: {
-      self.old = Event(title: title, date: date, textColor: color)
-      print(old)
-    })
   }
 }
 
 #Preview {
   NavigationStack {
-    EventForm(events: .constant([]), oldEvent: nil)
+    EventForm(events: .constant([]))
   }
 }

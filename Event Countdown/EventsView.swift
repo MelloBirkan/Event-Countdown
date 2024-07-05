@@ -24,11 +24,13 @@ struct EventsView: View {
           .buttonStyle(BorderedButtonStyle())
         }
       } else {
-        List(events) { event in
-          NavigationLink {
-            EventForm(title: event.title, color: event.textColor, date: event.date, events: $events, isNew: false, oldEvent: event)
-          } label: {
-            EventRow(event: event)
+        List {
+          ForEach(events.sorted(by: {$0 < $1})) { event in
+            NavigationLink {
+              EventForm(title: event.title, color: event.textColor, date: event.date, events: $events, isNew: false, oldEvent: event)
+            } label: {
+              EventRow(event: event)
+            }
           }
         }
         .toolbar {
