@@ -17,7 +17,6 @@ struct EventForm: View {
   var oldEvent: Event?
   
   var body: some View {
-    NavigationStack {
       Form {
         Section(isNew ? "Event Details" : "Edit Event Details") {
           TextField("Event Title", text: $title)
@@ -52,7 +51,6 @@ struct EventForm: View {
       }
       .navigationTitle(isNew ? (title.isEmpty ? "Event" : title) : ("Edit: \(title)") )
       .navigationBarTitleDisplayMode(.inline)
-    }
   }
 }
 

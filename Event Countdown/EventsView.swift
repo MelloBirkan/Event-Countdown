@@ -26,9 +26,7 @@ struct EventsView: View {
       } else {
         List {
           ForEach(events.sorted(by: {$0 < $1})) { event in
-            NavigationLink {
-              EventForm(title: event.title, color: event.textColor, date: event.date, events: $events, isNew: false, oldEvent: event)
-            } label: {
+            NavigationLink(value: event) {
               EventRow(event: event)
             }
           }
@@ -43,11 +41,16 @@ struct EventsView: View {
             }
           }
         }
+        .navigationDestination(for: Event.self, destination: { event in
+          EventForm(title: event.title, color: event.textColor, date: event.date, events: $events, isNew: false, oldEvent: event)
+        })
         .navigationTitle("Events")
       }
     }
     .sheet(isPresented: $isPresentingNewEventView) {
-      EventForm(events: $events, isNew: true, oldEvent: nil)
+      NavigationStack {
+        EventForm(events: $events, isNew: true, oldEvent: nil)
+      }
     }
   }
 }
