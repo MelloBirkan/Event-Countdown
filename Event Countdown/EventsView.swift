@@ -30,6 +30,9 @@ struct EventsView: View {
               EventRow(event: event)
             }
           }
+          .onDelete(perform: { indexSet in
+            events.remove(atOffsets: indexSet)
+          })
         }
         .toolbar {
           ToolbarItem(placement: .navigationBarTrailing) {
